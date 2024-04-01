@@ -1,0 +1,69 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\bin\\Debug\\net8.0\\wwwroot\\_framework\\blazor.webassembly.js",
+      "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\obj\\Debug\\net8.0\\compressed\\ikwoo4nmdg.gz",
+      "PackagePath": "staticwebassets\\_framework\\blazor.webassembly.js.gz"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\obj\\Debug\\net8.0\\scopedcss\\bundle\\SmartUIBlazorApp.styles.css",
+      "PackagePath": "staticwebassets\\SmartUIBlazorApp.styles.css"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\css\\app.css",
+      "PackagePath": "staticwebassets\\css\\app.css"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\css\\bootstrap\\bootstrap.min.css",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\css\\bootstrap\\bootstrap.min.css.map",
+      "PackagePath": "staticwebassets\\css\\bootstrap\\bootstrap.min.css.map"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\favicon.png",
+      "PackagePath": "staticwebassets\\favicon.png"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\icon-192.png",
+      "PackagePath": "staticwebassets\\icon-192.png"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\index.html",
+      "PackagePath": "staticwebassets\\index.html"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\sample-data\\weather.json",
+      "PackagePath": "staticwebassets\\sample-data\\weather.json"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\scripts\\jszip.min.js",
+      "PackagePath": "staticwebassets\\scripts\\jszip.min.js"
+    },
+    {
+      "Id": "C:\\Blazor Devlopment\\SmartUIBlazorApp\\SmartUIBlazorApp\\wwwroot\\scripts\\pdfMake.min.js",
+      "PackagePath": "staticwebassets\\scripts\\pdfMake.min.js"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.SmartUIBlazorApp.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.build.SmartUIBlazorApp.props",
+      "PackagePath": "build\\SmartUIBlazorApp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildMultiTargeting.SmartUIBlazorApp.props",
+      "PackagePath": "buildMultiTargeting\\SmartUIBlazorApp.props"
+    },
+    {
+      "Id": "obj\\Debug\\net8.0\\staticwebassets\\msbuild.buildTransitive.SmartUIBlazorApp.props",
+      "PackagePath": "buildTransitive\\SmartUIBlazorApp.props"
+    }
+  ],
+  "ElementsToRemove": []
+}

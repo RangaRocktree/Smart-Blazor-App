@@ -1,0 +1,578 @@
+﻿@page "/ganttchartogvlineup"
+
+@using SmartUIBlazorApp
+@using Smart.Blazor
+
+<style>
+    /* This is the CSS used in the demo */
+    /* fallback */
+    @@font-face {
+        font-family: 'Material Icons';
+        font-style: normal;
+        font-weight: 400;
+        src: url(https://fonts.gstatic.com/s/materialicons/v31/2fcrYFNaTjcS6g4U3t-Y5ZjZjT5FdEJ140U2DJYC3mY.woff2) format('woff2');
+    }
+
+    .material-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: inherit;
+        line-height: 1;
+        letter-spacing: normal;
+        text-transform: none;
+        display: inline-block;
+        white-space: nowrap;
+        word-wrap: normal;
+        direction: ltr;
+        -webkit-font-feature-settings: 'liga';
+        -webkit-font-smoothing: antialiased;
+    }
+
+    .material-icons {
+        margin-right: 10px;
+    }
+
+    smart-gantt-chart {
+        height: auto;
+        /* --smart-gantt-chart-task-default-height: 50px; */
+    }
+
+    smart-button {
+        width: 16.3%;
+    }
+
+    .header-controls {
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        --smart-button-padding: 2.5px 15px;
+    }
+
+        .header-controls smart-button {
+            min-width: 150px;
+        }
+</style>
+
+@* <Example Name="GanttChart"> *@
+    <div class="options">
+        <div class="option">
+            <h4>Select view:</h4>
+            <DropDownList DataSource="items" @bind-SelectedValues="@selectedValues" OnChange="OnChange"></DropDownList>            
+        </div><br />
+        <div class="option">            
+            <Button OnClick="ExportToXLSX">Export to XLSX</Button>
+            <Button OnClick="ExportToPDF">Export to PDF</Button>
+            <Button OnClick="ExportToHTML">Export to HTML</Button>
+            <Button OnClick="ExportToCSV">Export to CSV</Button>
+            <Button OnClick="ExportToTSV">Export to TSV</Button>
+            <Button OnClick="ExportToXML">Export to XML</Button>
+        </div>
+    </div>
+    
+    <Smart.Blazor.GanttChart @ref="gantt"
+                DataSource="Records" 
+                TaskColumns="taskColumns" 
+                TreeSize="treeSize" 
+                View="view"
+                SortMode="GanttChartSortMode.Many" 
+                TaskFiltering="true" 
+                FilterRow="true" 
+                OnCollapse="OnCollapse" 
+                OnExpand="OnExpand"
+                ShowBaseline="true" />
+
+<template id="headerTemplate">
+    <div class="header-controls">
+        <div class="zooming">
+            <smart-button id="zoomIn">Zoom In</smart-button>
+            <smart-button id="zoomOut">Zoom Out</smart-button>
+        </div>
+        <div class="insert-view">
+            <smart-button id="insert">Insert New Task</smart-button>
+        </div>
+        <div class="actions">
+            <smart-button id="undo">Restore</smart-button>
+            <smart-button id="redo">Update</smart-button>
+        </div>
+    </div>
+</template>
+
+@*     <div class="options">
+        <div class="option">
+            <Button OnClick="ExportToXLSX">Export to XLSX</Button>
+        </div>
+        <div class="option">
+            <Button OnClick="ExportToPDF">Export to PDF</Button>
+        </div>
+        <div class="option">
+            <Button OnClick="ExportToHTML">Export to HTML</Button>
+        </div>
+        <div class="option">
+            <Button OnClick="ExportToCSV">Export to CSV</Button>
+        </div>
+        <div class="option">
+            <Button OnClick="ExportToTSV">Export to TSV</Button>
+        </div>
+        <div class="option">
+            <Button OnClick="ExportToXML">Export to XML</Button>
+        </div>
+    </div> *@
+@* </Example> *@
+
+@code
+{
+    string treeSize = "20%";
+    GanttChart gantt;
+    GanttChartView view = GanttChartView.Month;
+    string headerTemplateId = "headerTemplate";
+    string[] items = new string[] { "year", "month", "week", "day" };
+    string[] selectedValues = new string[] { "month" };
+
+    private async void OnChange(Event eventObj)
+    {
+        switch (this.selectedValues[0])
+        {
+            case "year":
+                view = GanttChartView.Year;
+                break;
+            case "month":
+                view = GanttChartView.Month;
+                break;
+            case "week":
+                view = GanttChartView.Week;
+                break;
+            case "day":
+                view = GanttChartView.Day;
+                break;
+        }
+    }
+
+    List<GanttChartTaskColumn> taskColumns = new List<GanttChartTaskColumn>
+    {
+        new GanttChartTaskColumn() {
+            Label = "Name",
+            Value = "label",
+            Size = "50%"
+            // Min = "30%"
+        },
+        new GanttChartTaskColumn() {
+            Label = "Laycan Start",
+            Value = "dateStart",
+            Size = "25%"
+            // Min = 100
+        },
+        new GanttChartTaskColumn() {
+            Label = "Laycan End",
+            Value = "dateEnd",
+            Size  = "25%"
+            // Min = "30%"
+        }
+    };
+
+    public List<LaycanDataRecord> Records;
+
+    protected override void OnInitialized()
+    {
+        Records = new List<LaycanDataRecord>()
+        {
+            new LaycanDataRecord()
+            {
+                Label = "Apollo",
+                DateStart = "2024-03-01T12:00:00",
+                DateEnd = "2024-04-01T12:00:00",
+                DisableDrag = true,
+                DisableResize = true,
+                Expanded = true,
+                Type = "project",
+                Tasks = new List<LaycanDataRecord>()
+                {
+                    new LaycanDataRecord()
+                    {
+                        Label = "Apollo Handling Vessel One",
+                        DateStart = "2024-03-01T00:00:00",
+                        DateEnd= "2024-03-09T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,                        
+                        Type = "task",                           
+                        Planned = new Dictionary < string, string > ()
+                        {
+                            {
+                               "dateStart",
+                               "2024-02-28T00:00:00"
+                            },
+                            {
+                              "dateEnd",
+                              "2024-03-11T00:00:00"
+                            }
+                        }                       
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Apollo Handling Vessel Two",
+                        DateStart = "2024-03-10T00:00:00",
+                        DateEnd= "2024-03-14T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Apollo Handling Vessel Three",
+                        DateStart = "2024-03-14T00:00:00",
+                        DateEnd= "2024-03-19T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Apollo Handling Vessel Four",
+                        DateStart = "2024-03-20T00:00:00",
+                        DateEnd= "2024-03-25T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Apollo Idle",
+                        DateStart = "2024-03-26T00:00:00",
+                        DateEnd= "2024-04-01T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    }
+                }
+            },
+            new LaycanDataRecord()
+            {
+                Label = "Zeus",
+                DateStart = "2024-03-01T12:00:00",
+                DateEnd = "2024-04-01T12:00:00",
+                Expanded = true,
+                Type = "project",
+                Tasks = new List<LaycanDataRecord>()
+                {
+                    new LaycanDataRecord()
+                    {
+                        Label = "Zeus Handling Vessel One",
+                        DateStart = "2024-03-01T00:00:00",
+                        DateEnd= "2024-03-09T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Zeus Handling Vessel Two",
+                        DateStart = "2024-03-10T00:00:00",
+                        DateEnd= "2024-03-14T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Zeus Handling Vessel Three",
+                        DateStart = "2024-03-14T00:00:00",
+                        DateEnd= "2024-03-19T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Zeus Handling Vessel Four",
+                        DateStart = "2024-03-20T00:00:00",
+                        DateEnd= "2024-03-25T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Zeus Idle",
+                        DateStart = "2024-03-26T00:00:00",
+                        DateEnd= "2024-04-01T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    }
+                }
+            },
+            new LaycanDataRecord()
+            {
+                Label = "Mara",
+                DateStart = "2024-03-01T12:00:00",
+                DateEnd = "2024-04-01T12:00:00",
+                DisableDrag = true,
+                DisableResize = true,
+                Expanded = true,
+                Type = "project",
+                Tasks = new List<LaycanDataRecord>()
+                {
+                    new LaycanDataRecord()
+                    {
+                        Label = "Mara Handling Vessel One",
+                        DateStart = "2024-03-01T00:00:00",
+                        DateEnd= "2024-03-09T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Mara Handling Vessel Two",
+                        DateStart = "2024-03-10T00:00:00",
+                        DateEnd= "2024-03-14T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Mara Handling Vessel Three",
+                        DateStart = "2024-03-14T00:00:00",
+                        DateEnd= "2024-03-19T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Mara Handling Vessel Four",
+                        DateStart = "2024-03-20T00:00:00",
+                        DateEnd= "2024-03-25T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Mara Idle",
+                        DateStart = "2024-03-26T00:00:00",
+                        DateEnd= "2024-04-01T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    }
+                }
+            },
+            new LaycanDataRecord()
+            {
+                Label = "RT August",
+                DateStart = "2024-03-01T12:00:00",
+                DateEnd = "2024-04-01T12:00:00",
+                DisableDrag = true,
+                DisableResize = true,
+                Expanded = true,
+                Type = "project",
+                Tasks = new List<LaycanDataRecord>()
+                {
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT August Handling Vessel One",
+                        DateStart = "2024-03-01T00:00:00",
+                        DateEnd= "2024-03-09T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT August Handling Vessel Two",
+                        DateStart = "2024-03-10T00:00:00",
+                        DateEnd= "2024-03-14T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT August Handling Vessel Three",
+                        DateStart = "2024-03-14T00:00:00",
+                        DateEnd= "2024-03-19T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT August Handling Vessel Four",
+                        DateStart = "2024-03-20T00:00:00",
+                        DateEnd= "2024-03-25T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT August Idle",
+                        DateStart = "2024-03-26T00:00:00",
+                        DateEnd= "2024-04-01T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    }
+                }
+            },
+            new LaycanDataRecord()
+            {
+                Label = "RT Leo",
+                DateStart = "2024-03-01T12:00:00",
+                DateEnd = "2024-04-01T12:00:00",
+                DisableDrag = true,
+                DisableResize = true,
+                Expanded = true,
+                Type = "project",
+                Tasks = new List<LaycanDataRecord>()
+                {
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT Leo Handling Vessel One",
+                        DateStart = "2024-03-01T00:00:00",
+                        DateEnd= "2024-03-09T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT Leo Handling Vessel Two",
+                        DateStart = "2024-03-10T00:00:00",
+                        DateEnd= "2024-03-14T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT Leo Handling Vessel Three",
+                        DateStart = "2024-03-14T00:00:00",
+                        DateEnd= "2024-03-19T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT Leo Handling Vessel Four",
+                        DateStart = "2024-03-20T00:00:00",
+                        DateEnd= "2024-03-25T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "RT Leo Idle",
+                        DateStart = "2024-03-26T00:00:00",
+                        DateEnd= "2024-04-01T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    }
+                }
+            },
+            new LaycanDataRecord()
+            {
+                Label = "Loura",
+                DateStart = "2024-03-01T12:00:00",
+                DateEnd = "2024-04-01T12:00:00",
+                DisableDrag = true,
+                DisableResize = true,
+                Expanded = true,
+                Type = "project",
+                Tasks = new List<LaycanDataRecord>()
+                {
+                    new LaycanDataRecord()
+                    {
+                        Label = "Loura Handling Vessel One",
+                        DateStart = "2024-03-01T00:00:00",
+                        DateEnd= "2024-03-09T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Loura Handling Vessel Two",
+                        DateStart = "2024-03-10T00:00:00",
+                        DateEnd= "2024-03-14T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Loura Handling Vessel Three",
+                        DateStart = "2024-03-14T00:00:00",
+                        DateEnd= "2024-03-19T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Loura Handling Vessel Four",
+                        DateStart = "2024-03-20T00:00:00",
+                        DateEnd= "2024-03-25T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    },
+                    new LaycanDataRecord()
+                    {
+                        Label = "Loura Idle",
+                        DateStart = "2024-03-26T00:00:00",
+                        DateEnd= "2024-04-01T00:00:00",
+                        DisableDrag = true,
+                        DisableResize = true,
+                        Type = "task"
+                    }
+                }
+            }
+        };
+    }
+
+    private void ExportToXLSX()
+    {
+        gantt.ExportData("xlsx");
+    }
+
+    private void ExportToPDF()
+    {
+        gantt.ExportData("pdf");
+    }
+
+    private void ExportToHTML()
+    {
+        gantt.ExportData("html");
+    }
+
+    private void ExportToCSV()
+    {
+        gantt.ExportData("csv");
+    }
+
+    private void ExportToTSV()
+    {
+        gantt.ExportData("tsv");
+    }
+
+    private void ExportToXML()
+    {
+        gantt.ExportData("xml");
+    }
+
+    private void OnCollapse(Event eventObj)
+    {
+        GanttChartCollapseEventDetail args = eventObj["Detail"];        
+    }
+
+    private void OnExpand(Event eventObj)
+    {
+        GanttChartExpandEventDetail args = eventObj["Detail"];        
+    }
+}
